@@ -69,9 +69,9 @@ interface HeroEditModalProps {
 
 function HeroEditModal(props: HeroEditModalProps) {
   const { onSave, onClose, hero, isOpen } = props;
-  const [name, setName] = useState<string | undefined>(hero?.name);
-  const [superPower, setSuperPower] = useState<SuperPower | undefined>(
-    hero?.super_power
+  const [name, setName] = useState<string>(hero?.name || "");
+  const [superPower, setSuperPower] = useState<SuperPower>(
+    hero?.super_power || SuperPower.Rich
   );
 
   const onSaveClick = () => {
@@ -91,7 +91,7 @@ function HeroEditModal(props: HeroEditModalProps) {
         <ModalHeader>Edit Hero</ModalHeader>
         <ModalCloseButton />
         <ModalBody>
-          <Text>ID: {hero?.id}</Text>
+          {hero?.id && <Text>ID: {hero?.id}</Text>}
           <FormControl>
             <FormLabel>Name</FormLabel>
             <Input value={name} onChange={(e) => setName(e.target.value)} />
@@ -181,6 +181,7 @@ function App() {
   const getAndSetHeroes = async () => {
     const response = await getHeroes();
     setHeroes(response.data.heroes);
+    setSelectedHeroToEdit(null);
   };
 
   const onHeroSave = (hero: GetSuperhero) => {
@@ -190,6 +191,13 @@ function App() {
         super_power: hero.super_power,
       } as UpdateSuperhero).then((r) => {
         // TODO: being lazy here and just re-fetching the entire list
+        getAndSetHeroes();
+      });
+    } else {
+      createHero({
+        name: hero.name,
+        super_power: hero.super_power,
+      } as CreateSuperhero).then((r) => {
         getAndSetHeroes();
       });
     }
@@ -203,6 +211,16 @@ function App() {
     } else {
       console.error(`Somehow hero with id ${heroId} was not found`);
     }
+  };
+
+  const onNewClick = () => {
+    setSelectedHeroToEdit({} as GetSuperhero);
+    onOpen();
+  };
+
+  const onCloseModal = () => {
+    setSelectedHeroToEdit(null);
+    onClose();
   };
 
   const getHeroesCallback = useCallback(getAndSetHeroes, []);
@@ -230,13 +248,39 @@ function App() {
                 {errorMessage}
               </Alert>
             )}
+            <Box
+              maxW={"320px"}
+              w={"full"}
+              bg={useColorModeValue("white", "gray.900")}
+              boxShadow={"2xl"}
+              rounded={"lg"}
+              p={6}
+              textAlign={"center"}
+            >
+              <Heading fontSize={"2xl"} fontFamily={"body"}>
+                Add New
+              </Heading>
+              <Stack mt={8} direction={"row"} spacing={4}>
+                <Button
+                  flex={1}
+                  fontSize={"sm"}
+                  rounded={"full"}
+                  _focus={{
+                    bg: "gray.200",
+                  }}
+                  onClick={onNewClick}
+                >
+                  +
+                </Button>
+              </Stack>
+            </Box>
           </VStack>
         </Center>
       </Box>
       {selectedHeroToEdit && (
         <HeroEditModal
           isOpen={isOpen}
-          onClose={onClose}
+          onClose={onCloseModal}
           hero={selectedHeroToEdit}
           onSave={onHeroSave}
         />
