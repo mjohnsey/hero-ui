@@ -39,6 +39,12 @@ export interface CreateSuperhero {
      * @memberof CreateSuperhero
      */
     'super_power'?: SuperPower;
+    /**
+     * 
+     * @type {string}
+     * @memberof CreateSuperhero
+     */
+    'hometown'?: string;
 }
 /**
  * 
@@ -71,6 +77,12 @@ export interface GetSuperhero {
      * @memberof GetSuperhero
      */
     'super_power'?: SuperPower;
+    /**
+     * 
+     * @type {string}
+     * @memberof GetSuperhero
+     */
+    'hometown'?: string;
     /**
      * 
      * @type {string}
@@ -146,6 +158,12 @@ export interface UpdateSuperhero {
      * @memberof UpdateSuperhero
      */
     'super_power'?: SuperPower;
+    /**
+     * 
+     * @type {string}
+     * @memberof UpdateSuperhero
+     */
+    'hometown'?: string;
 }
 /**
  * 

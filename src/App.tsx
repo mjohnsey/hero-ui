@@ -73,12 +73,14 @@ function HeroEditModal(props: HeroEditModalProps) {
   const [superPower, setSuperPower] = useState<SuperPower>(
     hero?.super_power || SuperPower.Rich
   );
+  const [hometown, setHometown] = useState<string>(hero?.hometown || "");
 
   const onSaveClick = () => {
     const heroToSave = {
       name: name,
       super_power: superPower,
       id: hero?.id || "",
+      hometown: hometown,
     } as GetSuperhero;
     onSave(heroToSave);
     onClose();
@@ -95,6 +97,13 @@ function HeroEditModal(props: HeroEditModalProps) {
           <FormControl>
             <FormLabel>Name</FormLabel>
             <Input value={name} onChange={(e) => setName(e.target.value)} />
+          </FormControl>
+          <FormControl>
+            <FormLabel>Hometown</FormLabel>
+            <Input
+              value={hometown}
+              onChange={(e) => setHometown(e.target.value)}
+            />
           </FormControl>
 
           <FormControl>
@@ -154,6 +163,11 @@ function HeroCard(props: HeroCardProps) {
       >
         {_.startCase(hero.super_power || "")}
       </Text>
+      {hero.hometown && (
+        <Text textAlign={"center"} px={3}>
+          From: {hero.hometown}
+        </Text>
+      )}
       <Stack mt={8} direction={"row"} spacing={4}>
         <Button
           flex={1}
@@ -186,18 +200,12 @@ function App() {
 
   const onHeroSave = (hero: GetSuperhero) => {
     if (hero?.id && !_.isEmpty(hero.id)) {
-      updateHero(hero.id, {
-        name: hero.name,
-        super_power: hero.super_power,
-      } as UpdateSuperhero).then((r) => {
+      updateHero(hero.id, hero as UpdateSuperhero).then((r) => {
         // TODO: being lazy here and just re-fetching the entire list
         getAndSetHeroes();
       });
     } else {
-      createHero({
-        name: hero.name,
-        super_power: hero.super_power,
-      } as CreateSuperhero).then((r) => {
+      createHero(hero as CreateSuperhero).then((r) => {
         getAndSetHeroes();
       });
     }
