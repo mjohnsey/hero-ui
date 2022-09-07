@@ -33,28 +33,35 @@ import {
   SuperPower,
   UpdateSuperhero,
   CreateSuperhero,
+  GetHeroes,
 } from "./lib/api/";
+import { AxiosResponse } from "axios";
 
 // These functions should be in a provider component https://www.patterns.dev/posts/provider-pattern
 // START API FUNCTIONS
-const getApi = () => {
+const getApi = (): HeroesApi => {
   return new HeroesApi(
     // TODO: replace with your own API URL
     new Configuration({ basePath: "http://localhost:8000" })
   );
 };
 
-const getHeroes = async () => {
+const getHeroes = async (): Promise<AxiosResponse<GetHeroes, any>> => {
   const api = getApi();
   return await api.getHeroesHeroesGet();
 };
 
-const createHero = async (hero: CreateSuperhero) => {
+const createHero = async (
+  hero: CreateSuperhero
+): Promise<AxiosResponse<GetSuperhero, any>> => {
   const api = getApi();
   return await api.createHeroHeroesPost(hero);
 };
 
-const updateHero = async (heroId: string, hero: UpdateSuperhero) => {
+const updateHero = async (
+  heroId: string,
+  hero: UpdateSuperhero
+): Promise<AxiosResponse<GetSuperhero, any>> => {
   const api = getApi();
   return await api.updateHeroHeroesIdPut(heroId, hero);
 };
