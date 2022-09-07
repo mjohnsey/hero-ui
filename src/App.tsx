@@ -80,12 +80,14 @@ function HeroEditModal(props: HeroEditModalProps) {
   const [superPower, setSuperPower] = useState<SuperPower>(
     hero?.super_power || SuperPower.Rich
   );
+  // const [hometown, setHometown] = useState<string>(hero?.hometown || "");
 
   const onSaveClick = () => {
     const heroToSave = {
       name: name,
       super_power: superPower,
       id: hero?.id || "",
+      // hometown: hometown,
     } as GetSuperhero;
     onSave(heroToSave);
     onClose();
@@ -103,6 +105,13 @@ function HeroEditModal(props: HeroEditModalProps) {
             <FormLabel>Name</FormLabel>
             <Input value={name} onChange={(e) => setName(e.target.value)} />
           </FormControl>
+          {/* <FormControl>
+            <FormLabel>Hometown</FormLabel>
+            <Input
+              value={hometown}
+              onChange={(e) => setHometown(e.target.value)}
+            />
+          </FormControl> */}
 
           <FormControl>
             <FormLabel>Super Power</FormLabel>
@@ -161,6 +170,13 @@ function HeroCard(props: HeroCardProps) {
       >
         {_.startCase(hero.super_power || "")}
       </Text>
+      {/* <Text
+        textAlign={"center"}
+        color={useColorModeValue("gray.700", "gray.400")}
+        px={3}
+      >
+        {hero.hometown}
+      </Text> */}
       <Stack mt={8} direction={"row"} spacing={4}>
         <Button
           flex={1}
@@ -196,17 +212,29 @@ function App() {
       updateHero(hero.id, {
         name: hero.name,
         super_power: hero.super_power,
-      } as UpdateSuperhero).then((r) => {
-        // TODO: being lazy here and just re-fetching the entire list
-        getAndSetHeroes();
-      });
+        // hometown: hero.hometown,
+      } as UpdateSuperhero)
+        .then((r) => {
+          // TODO: being lazy here and just re-fetching the entire list
+          getAndSetHeroes();
+        })
+        .catch((e) => {
+          console.error(e);
+          setErrorMessage(e.message);
+        });
     } else {
       createHero({
         name: hero.name,
         super_power: hero.super_power,
-      } as CreateSuperhero).then((r) => {
-        getAndSetHeroes();
-      });
+        // hometown: hero.hometown,
+      } as CreateSuperhero)
+        .then((r) => {
+          getAndSetHeroes();
+        })
+        .catch((e) => {
+          console.error(e);
+          setErrorMessage(e.message);
+        });
     }
   };
 
@@ -249,12 +277,6 @@ function App() {
             {heroes.map((hero) => (
               <HeroCard key={hero.id} hero={hero} onEditClick={onEditClick} />
             ))}
-            {errorMessage && (
-              <Alert status="error">
-                <AlertIcon />
-                {errorMessage}
-              </Alert>
-            )}
             <Box
               maxW={"320px"}
               w={"full"}
@@ -281,6 +303,12 @@ function App() {
                 </Button>
               </Stack>
             </Box>
+            {errorMessage && (
+              <Alert status="error">
+                <AlertIcon />
+                {errorMessage}
+              </Alert>
+            )}
           </VStack>
         </Center>
       </Box>
