@@ -80,14 +80,14 @@ function HeroEditModal(props: HeroEditModalProps) {
   const [superPower, setSuperPower] = useState<SuperPower>(
     hero?.super_power || SuperPower.Rich
   );
-  // const [hometown, setHometown] = useState<string>(hero?.hometown || "");
+  const [hometown, setHometown] = useState<string>(hero?.hometown || "");
 
   const onSaveClick = () => {
     const heroToSave = {
       name: name,
       super_power: superPower,
       id: hero?.id || "",
-      // hometown: hometown,
+      hometown: hometown,
     } as GetSuperhero;
     onSave(heroToSave);
     onClose();
@@ -105,13 +105,13 @@ function HeroEditModal(props: HeroEditModalProps) {
             <FormLabel>Name</FormLabel>
             <Input value={name} onChange={(e) => setName(e.target.value)} />
           </FormControl>
-          {/* <FormControl>
+          <FormControl>
             <FormLabel>Hometown</FormLabel>
             <Input
               value={hometown}
               onChange={(e) => setHometown(e.target.value)}
             />
-          </FormControl> */}
+          </FormControl>
 
           <FormControl>
             <FormLabel>Super Power</FormLabel>
@@ -170,13 +170,13 @@ function HeroCard(props: HeroCardProps) {
       >
         {_.startCase(hero.super_power || "")}
       </Text>
-      {/* <Text
+      <Text
         textAlign={"center"}
         color={useColorModeValue("gray.700", "gray.400")}
         px={3}
       >
         {hero.hometown}
-      </Text> */}
+      </Text>
       <Stack mt={8} direction={"row"} spacing={4}>
         <Button
           flex={1}
@@ -212,7 +212,7 @@ function App() {
       updateHero(hero.id, {
         name: hero.name,
         super_power: hero.super_power,
-        // hometown: hero.hometown,
+        hometown: hero.hometown,
       } as UpdateSuperhero)
         .then((r) => {
           // TODO: being lazy here and just re-fetching the entire list
@@ -226,7 +226,7 @@ function App() {
       createHero({
         name: hero.name,
         super_power: hero.super_power,
-        // hometown: hero.hometown,
+        hometown: hero.hometown,
       } as CreateSuperhero)
         .then((r) => {
           getAndSetHeroes();
