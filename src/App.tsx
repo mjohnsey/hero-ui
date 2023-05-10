@@ -27,45 +27,12 @@ import {
 } from "@chakra-ui/react";
 import * as _ from "lodash";
 import {
-  HeroesApi,
   GetSuperhero,
-  Configuration,
   SuperPower,
   UpdateSuperhero,
   CreateSuperhero,
-  GetHeroes,
 } from "./lib/api/";
-import { AxiosResponse } from "axios";
-
-// These functions should be in a provider component https://www.patterns.dev/posts/provider-pattern
-// START API FUNCTIONS
-const getApi = (): HeroesApi => {
-  return new HeroesApi(
-    // TODO: replace with your own API URL
-    new Configuration({ basePath: "http://localhost:8000" })
-  );
-};
-
-const getHeroes = async (): Promise<AxiosResponse<GetHeroes, any>> => {
-  const api = getApi();
-  return await api.getHeroesHeroesGet();
-};
-
-const createHero = async (
-  hero: CreateSuperhero
-): Promise<AxiosResponse<GetSuperhero, any>> => {
-  const api = getApi();
-  return await api.createHeroHeroesPost(hero);
-};
-
-const updateHero = async (
-  heroId: string,
-  hero: UpdateSuperhero
-): Promise<AxiosResponse<GetSuperhero, any>> => {
-  const api = getApi();
-  return await api.updateHeroHeroesIdPut(heroId, hero);
-};
-// END API FUNCTIONS
+import useHeroes from "./hooks";
 
 interface HeroEditModalProps {
   onSave: (hero: GetSuperhero) => void;
@@ -200,6 +167,7 @@ function App() {
     useState<GetSuperhero | null>(null);
   const { onOpen, isOpen, onClose } = useDisclosure();
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const { getHeroes, createHero, updateHero } = useHeroes();
 
   const getAndSetHeroes = async () => {
     const response = await getHeroes();
